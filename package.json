@@ -1,0 +1,39 @@
+{
+  "name": "yare-io",
+  "version": "1.0.0",
+  "description": "Bot for yare.io",
+  "author": "Paul Nodet",
+  "license": "MIT",
+  "main": "bot.js",
+  "scripts": {
+    "build": "yarn run webpack --mode=development ",
+    "build:min": "yarn run webpack --mode=production --output-filename bot.min.js",
+    "lint": "yarn run eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "yarn lint --fix",
+    "serve:base": "bash -c 'cd node_modules/yare-code-sync; nvm i; npm i; npx grunt'",
+    "serve": "env CUSTOM_CODE_PATH=../../dist/bot.js yarn serve:base",
+    "serve:min": "env CUSTOM_CODE_PATH=../../dist/bot.min.js yarn serve:base",
+    "watch": "bash -c 'yarn build --watch & watchPid=\"$!\" ; yarn serve ; kill ${watchPid}'",
+    "watch:min": "bash -c 'yarn build:min --watch & watchPid=\"$!\" ; yarn serve:min ; kill ${watchPid}'"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-typescript": "^7.13.0",
+    "@tsconfig/node12": "^1.0.9",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "babel-loader": "^8.2.2",
+    "core-js": "^3.14.0",
+    "eslint": "^7.28.0",
+    "eslint-webpack-plugin": "^2.5.4",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "yare-code-sync": "git://github.com/arikwex/yare-code-sync.git"
+  }
+}

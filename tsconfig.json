@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist/",
+		"module": "ESNext",
+		"allowJs": true
+	},
+	"extends": "@tsconfig/node12/tsconfig.json",
+	"typeRoots": ["./typings", "./node_modules/@types"]
+}
