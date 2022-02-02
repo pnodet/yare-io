@@ -16,6 +16,14 @@
     "watch": "bash -c 'yarn build --watch & watchPid=\"$!\" ; yarn serve ; kill ${watchPid}'",
     "watch:min": "bash -c 'yarn build:min --watch & watchPid=\"$!\" ; yarn serve:min ; kill ${watchPid}'"
   },
+  "prettier": "prettier-config-xo",
+  "xo": {
+    "prettier": true,
+    "rules": {
+      "import/extensions": "off",
+      "@typescript-eslint/no-unused-vars": "warn"
+    }
+  },
   "devDependencies": {
     "@babel/cli": "^7.14.3",
     "@babel/core": "^7.14.3",
@@ -28,10 +36,14 @@
     "core-js": "^3.14.0",
     "eslint": "^7.28.0",
     "eslint-webpack-plugin": "^2.5.4",
+    "prettier": "^2.5.1",
+    "prettier-config-xo": "^2.0.0",
     "ts-loader": "^9.2.2",
     "typescript": "^4.3.2",
     "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0"
+    "webpack-cli": "^4.7.0",
+    "xo": "^0.47.0",
+    "xo-webpack-plugin": "^1.0.3"
   },
   "dependencies": {
     "yare-code-sync": "git://github.com/arikwex/yare-code-sync.git"
