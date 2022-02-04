@@ -3,7 +3,7 @@ import {
 	chooseSpiritType,
 	shouldSelfDefend,
 	shouldDefendBase,
-	shouldRetreat,
+	betterShouldRetreat as shouldRetreat,
 } from './common/decisions';
 import soldierStrategy from './soldier/strategies';
 import workerStrategy from './worker/strategies';

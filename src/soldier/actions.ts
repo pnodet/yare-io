@@ -41,9 +41,8 @@ const captureOutpost = (spirit: Spirit) => {
 		spirit.state = 'harvesting';
 	}
 
-	canHarvestMiddle()
-		? common.chargeOrHarvest(spirit, outpost, star_p89)
-		: common.chargeOrHarvest(spirit, outpost, getClosest.star(spirit));
+	const targetStar = canHarvestMiddle() ? star_p89 : getClosest.star(spirit);
+	common.chargeOrHarvest(spirit, outpost, targetStar);
 };
 
 const merge = (spirit: CircleSpirit) => {
@@ -89,7 +88,7 @@ const stayDefense = (spirit: Spirit) => {
 
 	const patrolIndex: number = memory.spirits[spirit.id]['patrol-position'];
 	const patrolLength: number = memory.patrolLength;
-	const patrolPoint = getPatrolPoint(patrolIndex % patrolLength);
+	const patrolPoint: Position = getPatrolPoint(patrolIndex % patrolLength);
 	spirit.move(patrolPoint);
 	if (positionsMatch(patrolPoint, spirit.position)) {
 		memory.spirits[spirit.id]['patrol-position']++;

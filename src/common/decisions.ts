@@ -1,15 +1,30 @@
 import {
 	getClosest,
 	getDistance,
-	getSpiritsEnergyInRange,
+	getEnergy,
+	getPlayerId,
 } from '../utils/functions';
 import {count, target, movingAverage, movingAverageOp} from '../data';
+import evaluateBattle from '../soldier/combat';
 import {isInRange} from '../utils/state';
 
 enum Type {
 	worker = 'worker',
 	soldier = 'soldier',
 }
+
+interface SpCombat extends _Spirit {
+	index: number;
+}
+
+interface SpMap {
+	index: number;
+	size: number;
+	energy: number;
+}
+
+type SpsCombat = SpCombat[];
+type SpsMap = SpMap[];
 
 /**
  * Decide new spirit type
@@ -57,12 +72,12 @@ export const shouldDefendBase = (spirit: Spirit, index: number): boolean => {
  * @param {Spirit} spirit Current spirit
  * @returns {boolean}
  */
-export const shouldRetreat = (sp: Spirit): boolean => {
+const shouldRetreat = (sp: Spirit): boolean => {
 	if (sp.sight.enemies.length === 0) return false;
 	const closestEnemy = getClosest.enemies(sp);
-	if (sp.energy < 3 && getDistance(sp, spirits[closestEnemy[0]]) < 350)
+	if (sp.energy < 2 && getDistance(sp, spirits[closestEnemy[0]]) < 350)
 		return true;
-	const enemiesEnergy = getSpiritsEnergyInRange(sp, sp.sight.enemies);
+	const enemiesEnergy = getEnergy.spiritsInRange(sp, sp.sight.enemies);
 	const friendsInRange = sp.sight.friends.filter(friendId =>
 		isInRange(sp, spirits[friendId]),
 	);
@@ -71,6 +86,26 @@ export const shouldRetreat = (sp: Spirit): boolean => {
 	const friendsWithEnergy = friendsInRange.filter(
 		friendId => spirits[friendId].energy > 3,
 	);
-	const friendsEnergy = getSpiritsEnergyInRange(sp, friendsWithEnergy);
+	const friendsEnergy = getEnergy.spiritsInRange(sp, friendsWithEnergy);
 	return enemiesEnergy * 1.25 > friendsEnergy;
+};
+
+export const betterShouldRetreat = (sp: Spirit): boolean => {
+	if (sp.sight.enemies.length === 0) return false;
+	const closestEnemy = getClosest.enemies(sp);
+	const nearbyEnemies = closestEnemy
+		.filter(id => getDistance(sp, spirits[id]) <= 200)
+		.map(id => spirits[id]);
+
+	const closestFriends = getClosest.friends(sp);
+	const nearbyFriends = closestFriends
+		.filter(id => getDistance(sp, spirits[id]) <= 20)
+		.map(id => spirits[id]);
+
+	const myAdvantage = evaluateBattle(
+		nearbyEnemies as unknown as SpsCombat,
+		nearbyFriends as unknown as SpsCombat,
+	);
+	sp.shout(`My advantage is ${myAdvantage}`);
+	return myAdvantage < 0;
 };

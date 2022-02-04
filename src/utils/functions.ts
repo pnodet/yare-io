@@ -75,17 +75,17 @@ export const getLowest = {
 	enemies: getLowestEnemies,
 };
 
-export const getSpiritsEnergy = (_spirits: any[]): number => {
+const getSpiritsEnergy = (_spirits: any[]): number => {
 	if (!_spirits || _spirits.length === 0) return 0;
 	const array = _spirits
 		.filter(sp => spirits[sp].hp > 0)
 		.map(sp => spirits[sp].energy);
 	if (!array || array.length === 0) return 0;
-	const _spiritsEnergy = array.reduce((a, b) => a + b);
+	const _spiritsEnergy = array.reduce((a, b) => a + b, 0);
 	return _spiritsEnergy;
 };
 
-export const getSpiritsEnergyInRange = (
+const getSpiritsEnergyInRange = (
 	src: Spirit | Base | Outpost,
 	_spirits: any[],
 	range = 300,
@@ -97,8 +97,13 @@ export const getSpiritsEnergyInRange = (
 		.map(sp => spirits[sp].energy);
 
 	if (!array || array.length === 0) return 0;
-	const _spiritsEnergy = array.reduce((a, b) => a + b);
+	const _spiritsEnergy = array.reduce((a, b) => a + b, 0);
 	return _spiritsEnergy;
+};
+
+export const getEnergy = {
+	spirits: getSpiritsEnergy,
+	spiritsInRange: getSpiritsEnergyInRange,
 };
 
 export const canHarvestMiddle = (): boolean => {
@@ -125,7 +130,11 @@ export const positionsMatch = (a: Position, b: Position) =>
 	Math.round(a[0]) === Math.round(b[0]) &&
 	Math.round(a[1]) === Math.round(b[1]);
 
-export const getChainPosition = (a: Base, b: Star, distance: number): Position => {
+export const getChainPosition = (
+	a: Base,
+	b: Star,
+	distance: number,
+): Position => {
 	const xd = a.position[0] - b.position[0];
 	const yd = a.position[1] - b.position[1];
 	const lineDist = Math.sqrt(xd ** 2 + yd ** 2);

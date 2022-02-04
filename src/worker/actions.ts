@@ -55,7 +55,9 @@ const harvestMiddle = (spirit: Spirit) => {
  * @param {Spirit} spirit Current spirit
  */
 const heal = (spirit: Spirit) => {
-	const target = getClosest.friends(spirit).filter(s => spirits[s].type === 'soldier')
+	const target = getClosest
+		.friends(spirit)
+		.filter(s => spirits[s].type === 'soldier');
 	if (target.length === 0) return;
 	const friendToHeal = spirits[target[0]];
 	if (friendToHeal.energy === friendToHeal.energy_capacity) return;
@@ -117,7 +119,7 @@ const feed = (spirit: Spirit) => {
 	}
 };
 
-const workerActions={
+const workerActions = {
 	harvestClosest,
 	harvestMiddle,
 	heal,

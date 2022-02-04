@@ -9,7 +9,8 @@ import {getRole, shouldHarvestMiddle, shouldWorkerHeal} from './decisions';
 const workerStrategy = (spirit: Spirit, index: number) => {
 	if (!spirit.role) spirit.role = getRole();
 
-	if (spirit.role === 'harvester') {
+	/* 
+	If (spirit.role === 'harvester') {
 		workerActions.harvest(spirit);
 		return;
 	}
@@ -24,11 +25,9 @@ const workerStrategy = (spirit: Spirit, index: number) => {
 		return;
 	}
 
-	spirit.shout(spirit.role);
-	return;
-
+ */
 	if (!spirit.targetStar && shouldHarvestMiddle()) {
-		spirit.targetStar = ([MY_STAR, star_p89] as Star[])[index % 2];
+		spirit.targetStar = [MY_STAR, star_p89][index % 2];
 	} else if (!spirit.targetStar) {
 		spirit.targetStar = MY_STAR;
 	}

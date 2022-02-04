@@ -1,5 +1,7 @@
 import {getMovingAverage, getPlayerId} from './utils/functions';
 
+if (!memory.spirits) memory.spirits = {};
+
 /**
  *  Get the average economy
  */
@@ -25,7 +27,7 @@ const totalEnergy: number =
 	Object.values(my_spirits)
 		.filter(s => s.hp > 0)
 		.map(s => s.energy as number)
-		.reduce((a, b) => a + b);
+		.reduce((a, b) => a + b, 0);
 
 const totalEnergyOp: number =
 	enemy_base.energy +
@@ -33,7 +35,7 @@ const totalEnergyOp: number =
 		.filter(s => (s.id as SpiritID).startsWith(getPlayerId.enemy))
 		.filter(s => s.hp > 0)
 		.map(s => s.energy as number)
-		.reduce((a, b) => a + b);
+		.reduce((a, b) => a + b, 0);
 
 const count: Record<string, number> = {
 	total: 0,

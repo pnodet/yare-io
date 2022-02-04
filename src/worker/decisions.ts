@@ -11,7 +11,7 @@ const workerCount: Record<string, number> = {
 
 const getRole = (): RoleWorker => {
 	const sumOfRoles = [
-		workerCount.harvester,
+		workerCount.harvester / 2,
 		workerCount.feeder,
 		workerCount.linker,
 	];

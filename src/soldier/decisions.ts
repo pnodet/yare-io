@@ -1,8 +1,4 @@
-import {
-	getSpiritsEnergy,
-	getSpiritsEnergyInRange,
-	getPlayerId,
-} from '../utils/functions';
+import {getEnergy, getPlayerId} from '../utils/functions';
 import {notFull, isEmpty} from '../utils/state';
 
 // ************ SOLDIERS ********************
@@ -28,7 +24,7 @@ export const shouldAttackBase = (): boolean => {
 	const enemiesAroundBase = enemy_base.sight.friends.filter(id =>
 		id.startsWith(getPlayerId.enemy),
 	);
-	const energyAroundBase = getSpiritsEnergyInRange(
+	const energyAroundBase = getEnergy.spiritsInRange(
 		enemy_base,
 		enemiesAroundBase,
 	);
@@ -38,7 +34,7 @@ export const shouldAttackBase = (): boolean => {
 		.filter(s => s.type === 'soldier')
 		.filter(s => s.energy > 3);
 	const allAttackersId = allAttackers.map(s => s.id);
-	const allEnergyAttackers = getSpiritsEnergy(allAttackersId);
+	const allEnergyAttackers = getEnergy.spirits(allAttackersId);
 
 	if (allEnergyAttackers > energyAroundBase * 1.5) return true;
 
@@ -65,7 +61,7 @@ export const shouldCaptureOutpost = (): boolean => {
 	const enemiesAroundOutpost = outpost.sight.enemies.filter(id =>
 		id.startsWith(getPlayerId.enemy),
 	);
-	const energyAroundOutpost = getSpiritsEnergyInRange(
+	const energyAroundOutpost = getEnergy.spiritsInRange(
 		outpost,
 		enemiesAroundOutpost,
 	);
@@ -75,7 +71,7 @@ export const shouldCaptureOutpost = (): boolean => {
 		.filter(s => s.role === 'attacker')
 		.filter(s => s.energy > 3);
 	const attackersId = attackers.map(s => s.id);
-	const energyAttackers = getSpiritsEnergy(attackersId);
+	const energyAttackers = getEnergy.spirits(attackersId);
 
 	if (
 		(outpost.control === getPlayerId.me || energyAroundOutpost === 0) &&

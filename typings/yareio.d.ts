@@ -8,7 +8,7 @@ declare const memory: {
 	prevEnergy: number;
 	prevEnergyOp: number;
 	patrolLength: number;
-	spirits: Record<SpiritID, Record<string, any>>;
+	spirits: Record<SpiritID, Record<string, number>>;
 }; // & Record<string, any>;
 
 type Position = [x: number, y: number];
@@ -104,17 +104,6 @@ interface TriangleSpirit extends _Spirit {
 }
 
 type Spirit = CircleSpirit | SquareSpirit | TriangleSpirit;
-
-interface SpiritP extends Spirit {
-	index: number;
-	energy: number;
-}
-
-interface SpiritPMap {
-	index: number;
-	size: number;
-	energy: number;
-}
 
 interface _Structure extends Entity {
 	structure_type: StructureType;
