@@ -1,53 +1,61 @@
-import {BEAM_RANGE} from '../constants';
-import {getDistance, getPlayerId} from './functions';
+import {getMaxFarmers} from './functions';
+import {dist, isWithinDist} from '@/utils/vectors';
+import data from '@/data';
 
-const isFull = (element: Outpost | Spirit): boolean =>
+export const range = 200;
+
+export const isFull = (element: Outpost | Spirit): boolean =>
 	element.energy === element.energy_capacity;
 
-const almostFull = (element: Outpost | Spirit): boolean =>
+export const almostFull = (element: Outpost | Spirit): boolean =>
 	element.energy >= element.energy_capacity * 0.8;
 
-const notFull = (element: Outpost | Spirit): boolean =>
+export const notFull = (element: Outpost | Spirit): boolean =>
 	element.energy < element.energy_capacity;
 
-const isEmpty = (element: Outpost | Spirit): boolean => element.energy === 0;
+export const isEmpty = (element: Outpost | Spirit): boolean =>
+	element.energy === 0;
 
-const almostEmpty = (element: Outpost | Spirit): boolean =>
+export const almostEmpty = (element: Outpost | Spirit): boolean =>
 	element.energy <= element.energy_capacity * 0.2;
 
-const notEmpty = (element: Outpost | Spirit): boolean => element.energy > 0;
+export const notEmpty = (element: Outpost | Spirit): boolean =>
+	element.energy > 0;
 
-const isInRange = (sp: Spirit, st: Structure | Spirit): boolean =>
-	getDistance(sp, st) < BEAM_RANGE;
+export const hasRoom = (sp: Spirit, n = 1): boolean =>
+	sp.energy <= sp.energy_capacity - sp.size * n;
 
-const getSpiritsFriends = () => {
-	const allSpirits = Array.from(Object.values(spirits)) as Spirit[];
-	const friends = allSpirits.filter(
-		sp => sp.id.startsWith(getPlayerId.me) && sp.hp > 0,
+export const isInRange = (sp: Spirit, st: Structure | Spirit): boolean =>
+	dist(sp.position, st.position) < range;
+
+export const canTransfer = (sp: Spirit, n = 1): boolean =>
+	sp.energy >= sp.size * n;
+
+/**
+ * The number of times a ship wants to be healed
+ */
+export const requestedHeals = (sp: Spirit): number =>
+	Math.floor((sp.energy_capacity - sp.energy) / sp.size);
+
+const getStage = (): 0 | 1 => {
+	const {_spirits, _stars} = data;
+	const Nhome_max = getMaxFarmers(_stars.me, _spirits.friends[0].size);
+	if (_spirits.friends.length > Nhome_max * 2 + 4) {
+		return 1;
+	}
+
+	return 0;
+};
+
+export const _stage = getStage();
+
+export const isNearStar = (s: Spirit): boolean => {
+	const {_stars} = data;
+	return (
+		isWithinDist(s.position, _stars.me.position) ||
+		isWithinDist(s.position, _stars.middle.position) ||
+		isWithinDist(s.position, _stars.enemy.position)
 	);
-	return friends;
 };
 
-const getSpiritsEnemies = () => {
-	const allSpirits = Array.from(Object.values(spirits)) as Spirit[];
-	const enemies = allSpirits.filter(
-		sp => sp.id.startsWith(getPlayerId.enemy) && sp.hp > 0,
-	);
-	return enemies;
-};
-
-const getSpirits = {
-	friends: getSpiritsFriends,
-	enemies: getSpiritsEnemies,
-};
-
-export {
-	isFull,
-	almostFull,
-	notFull,
-	isEmpty,
-	almostEmpty,
-	notEmpty,
-	isInRange,
-	getSpirits,
-};
+export const notNearStar = (s: Spirit): boolean => !isNearStar(s);

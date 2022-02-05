@@ -12,7 +12,7 @@ declare const memory: {
 }; // & Record<string, any>;
 
 type Position = [x: number, y: number];
-type Vector = [x: number, y: number];
+type Vector = number[];
 type PlayerID = string;
 type SpiritID = `${PlayerID}_${number}`;
 type StructureType = 'base' | 'outpost' | 'star';
@@ -62,6 +62,7 @@ interface Destructible extends Entity {
 
 interface _Spirit extends Destructible {
 	id: SpiritID;
+	index: number;
 
 	hp: 0 | 1;
 	merged: SpiritID[];

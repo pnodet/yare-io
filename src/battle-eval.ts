@@ -108,9 +108,6 @@ const evaluateTick = (
 		}))
 		.filter(s => s.energy >= 0);
 
-	// Console.log("resulting_attackers:", attackersResult)
-	// console.log("resulting_defenders: ", defendersResult)
-
 	return [attackersResult, defendersResult];
 };
 

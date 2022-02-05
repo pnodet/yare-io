@@ -2,6 +2,13 @@
 	"compilerOptions": {
 		"outDir": "./dist/",
 		"module": "ESNext",
+		"moduleResolution": "node",
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": ["*"],
+			"@/mv-actions/*": ["move/actions/*"],
+			"@/engy-actions/*": ["energize/actions/*"],
+		},
 		"allowJs": true
 	},
 	"extends": "@tsconfig/node12/tsconfig.json",

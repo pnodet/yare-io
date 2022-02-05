@@ -1,47 +1,23 @@
-import RenderService from '../node_modules/yare-code-sync/client/RenderService';
-import {
-	chooseSpiritType,
-	shouldSelfDefend,
-	shouldDefendBase,
-	betterShouldRetreat as shouldRetreat,
-} from './common/decisions';
-import soldierStrategy from './soldier/strategies';
-import workerStrategy from './worker/strategies';
-import commonActions from './common/actions';
+import getMoveOrders from '@/move/index';
+import getEnergizeOrders from '@/energize/index';
+import dashboard from '@/dashboard';
 
-RenderService.circle(base.position, 200, '#ff0000');
-RenderService.circle(base.position, 400, '#ff0000');
-RenderService.circle(enemy_base.position, 400, '#ff0000');
+const main = () => {
+	for (const [index, spirit] of my_spirits.entries()) spirit.index = index;
 
-/**
- * Iterate over each spirit and decide what to do
- */
-for (const [index, spirit] of my_spirits.entries()) {
-	if (!memory.spirits[spirit.id]) memory.spirits[spirit.id] = {};
-	if (!spirit.type) spirit.type = chooseSpiritType();
+	const [targetPosition, nfarmers, nmidfarmers] = getMoveOrders();
+	const targetEnergy: Entity[] = getEnergizeOrders(nfarmers, nmidfarmers);
 
-	if (shouldRetreat(spirit)) {
-		commonActions.retreat(spirit);
-		continue;
+	for (const [index, spirit] of my_spirits.entries()) {
+		if (targetPosition[index]) spirit.move(targetPosition[index]);
+		if (targetEnergy[index]) spirit.energize(targetEnergy[index]);
 	}
+};
 
-	if (shouldSelfDefend(spirit)) {
-		commonActions.selfDefense(spirit);
-		continue;
-	}
+main();
 
-	if (shouldDefendBase(spirit, index)) {
-		commonActions.defendBase(spirit);
-		continue;
-	}
-
-	if (spirit.type === 'worker') {
-		workerStrategy(spirit, index);
-		continue;
-	}
-
-	if (spirit.type === 'soldier') {
-		soldierStrategy(spirit);
-		continue;
-	}
-}
+console.log(`ticks: ${tick}`);
+console.log(`totalEnergy:  ${dashboard.totalEnergy}`);
+console.log(`movingAverage:  ${dashboard.movingAverage}`);
+console.log(`totalEnergyOp:  ${dashboard.totalEnergyOp}`);
+console.log(`movingAverageOp:  ${dashboard.movingAverageOp}`);

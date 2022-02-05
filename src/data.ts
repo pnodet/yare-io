@@ -1,79 +1,72 @@
-import {getMovingAverage, getPlayerId} from './utils/functions';
-
-if (!memory.spirits) memory.spirits = {};
-
-/**
- *  Get the average economy
- */
-if (!memory.movingAverage) memory.movingAverage = [];
-let economyScore = base.energy - (memory.prevEnergy || 0);
-economyScore = economyScore < 0 ? 0 : economyScore;
-memory.movingAverage.push(economyScore);
-const movingAverage = getMovingAverage(memory.movingAverage);
-memory.prevEnergy = base.energy;
-
-/**
- *  Get the average enemy economy
- */
-if (!memory.movingAverageOp) memory.movingAverageOp = [];
-let economyScoreOp = enemy_base.energy - (memory.prevEnergyOp || 0);
-economyScoreOp = economyScoreOp < 0 ? 0 : economyScoreOp;
-memory.movingAverageOp.push(economyScoreOp);
-const movingAverageOp = getMovingAverage(memory.movingAverageOp);
-memory.prevEnergyOp = enemy_base.energy;
-
-const totalEnergy: number =
-	base.energy +
-	Object.values(my_spirits)
-		.filter(s => s.hp > 0)
-		.map(s => s.energy as number)
-		.reduce((a, b) => a + b, 0);
-
-const totalEnergyOp: number =
-	enemy_base.energy +
-	Object.values(spirits)
-		.filter(s => (s.id as SpiritID).startsWith(getPlayerId.enemy))
-		.filter(s => s.hp > 0)
-		.map(s => s.energy as number)
-		.reduce((a, b) => a + b, 0);
-
-const count: Record<string, number> = {
-	total: 0,
-	attacker: 0,
-	defender: 0,
-	scout: 0,
-	harvester: 0,
-	linker: 0,
-	feeder: 0,
+const getDistance = (p1: Position, p2: Position): number => {
+	const dx = (p1[0] - p2[0]) ** 2;
+	const dy = (p1[1] - p2[1]) ** 2;
+	return Math.sqrt(dx + dy);
 };
 
-for (const role of Object.keys(count)) count[role] = 0;
-
-for (const spirit of my_spirits) {
-	if (spirit.hp === 0) continue;
-	const currentRole = spirit.role;
-	if (!currentRole) continue;
-	count[currentRole]++;
-}
-
-for (const role of Object.keys(count)) count.total += count[role];
-const targetScout = Math.max(1, Math.round(count.total * 0.05));
-const targetDefender = Math.round(count.total * 0.1);
-const targetSolider = Math.min(tick * 0.2, count.total * 0.1);
-
-const target = {
-	scout: targetScout,
-	defender: targetDefender,
-	solider: targetSolider,
+const _players = {
+	me: this_player_id,
+	enemy: players.p1 === this_player_id ? players.p2 : players.p1,
 };
 
-export {count, totalEnergy, target, movingAverage, movingAverageOp};
+const getSpiritsFriends = () => {
+	const allSpirits = Array.from(Object.values(spirits)) as Spirit[];
+	const friends = allSpirits.filter(
+		sp => sp.id.startsWith(_players.me) && sp.hp > 0,
+	);
+	return friends;
+};
 
-const niceRound = (number_: number): number =>
-	Math.round((number_ + Number.EPSILON) * 100) / 100;
+const getSpiritsEnemies = () => {
+	const allSpirits = Array.from(Object.values(spirits)) as Spirit[];
+	const enemies = allSpirits.filter(
+		sp => sp.id.startsWith(_players.enemy) && sp.hp > 0,
+	);
+	return enemies;
+};
 
-console.log(`ticks: ${tick}`);
-console.log(`totalEnergy:  ${totalEnergy}`);
-console.log(`movingAverage:  ${niceRound(movingAverage)}`);
-console.log(`totalEnergyOp:  ${totalEnergyOp}`);
-console.log(`movingAverageOp:  ${niceRound(movingAverageOp)}`);
+const _spirits = {
+	friends: getSpiritsFriends(),
+	enemies: getSpiritsEnemies(),
+};
+
+const _bases = {
+	me: base,
+	enemy: enemy_base,
+};
+
+const getStars = () => {
+	const distanceBaseZxq = getDistance(base.position, star_zxq.position);
+	const distanceBaseA1c = getDistance(base.position, star_a1c.position);
+
+	const stars = {
+		me: star_zxq,
+		middle: star_p89,
+		enemy: star_a1c,
+	};
+
+	if (distanceBaseA1c < distanceBaseZxq) {
+		stars.me = star_a1c;
+		stars.enemy = star_zxq;
+	}
+
+	return stars;
+};
+
+const getInfo = (): {
+	outpostcontrolIsMe: boolean;
+	outpostcontrolIsEnemy: boolean;
+} => {
+	const outpostcontrolIsMe = _players.me === outpost.control;
+	const outpostcontrolIsEnemy = _players.enemy === outpost.control;
+	return {outpostcontrolIsMe, outpostcontrolIsEnemy};
+};
+
+const retrieveData = () => {
+	const _stars = getStars();
+	const _info = getInfo();
+	return {_players, _spirits, _bases, _stars, _info};
+};
+
+const data = retrieveData();
+export default data;
