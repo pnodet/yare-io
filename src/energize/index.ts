@@ -6,10 +6,10 @@ export default function getEnergizeOrders(
 	nmidfarmers: number,
 ): Entity[] {
 	const {_spirits} = data;
-	const {friends, enemies} = _spirits;
+	const {friends} = _spirits;
 
 	const targets: Entity[] = Array.from({
-		length: my_spirits.length,
+		length: friends.length,
 	}).fill(null) as Entity[];
 
 	const busy: number[] = [];

@@ -10,7 +10,7 @@ import {
 import {notEmpty} from '@/utils/state';
 import {isWithinDist, sum} from '@/utils/vectors';
 
-const {_spirits, _players} = data;
+const {_spirits} = data;
 const {friends, enemies} = _spirits;
 
 export default function enemy(targets: Entity[], attacking: number[]): void {
@@ -32,11 +32,11 @@ const energize_enemyship = (
 		const en = enemy.energy - lossFromAttacking(enemy);
 		const enemyEnergy = en + assumeNheals * enemy.size;
 		let dmgdealt = 0;
-		for (const myship of availableFriends) {
-			if (dmgdealt <= enemyEnergy && notEmpty(myship)) {
-				targets[myship.index] = enemy;
-				dmgdealt += attackdmg(myship);
-				attacking.push(myship.index);
+		for (const spirit of availableFriends) {
+			if (dmgdealt <= enemyEnergy && notEmpty(spirit)) {
+				targets[spirit.index] = enemy;
+				dmgdealt += attackdmg(spirit);
+				attacking.push(spirit.index);
 			}
 		}
 	}

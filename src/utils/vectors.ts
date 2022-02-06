@@ -322,6 +322,17 @@ export const popfirst = (v: Vector): number => {
  */
 export const pushfirst = (v: Vector, x: number): Vector => (v.unshift(x), v);
 
+export const weightedmean = (
+	points: Position[],
+	weights: number[],
+): Position => {
+	const x = sum(points.map((p, i) => weights[i] * p[0]));
+	const y = sum(points.map((p, i) => weights[i] * p[1]));
+	const weightsum = sum(weights);
+	const pos = [x / weightsum, y / weightsum] as Position;
+	return pos;
+};
+
 /**
  * Return the point in the vector ps=[p1,p2,p2] that is closest to target point targetpoint
  */

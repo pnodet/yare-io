@@ -1,22 +1,29 @@
-import data from '@/data';
-import {getClose, getAvailableSpirits} from '@/utils/functions';
-import {offset, dist, isWithinDist} from '@/utils/vectors';
 import evaluateBattle from '@/battle-eval';
+import data from '@/data';
+import {getAvailableSpirits, getClose} from '@/utils/functions';
+import {_stage} from '@/utils/state';
+import {dist, isWithinDist, offset} from '@/utils/vectors';
 
-export default function defendBase(trgtPos: Position[], busy: number[]): void {
-	const {_spirits} = data;
-	const {friends, enemies} = _spirits;
+const {_spirits} = data;
+const {friends, enemies} = _spirits;
+
+export default function defendStructure(
+	trgtPos: Position[],
+	busy: number[],
+	struct: Structure,
+	range = 300,
+): void {
 	const attackers = enemies.filter(s =>
-		isWithinDist(s.position, base.position, 320),
+		isWithinDist(s.position, struct.position, range),
 	);
 
 	if (attackers) {
 		for (const enemy of attackers) {
-			const distance = dist(enemy.position, base.position);
+			const distance = dist(enemy.position, struct.position);
 			const interceptPoint = offset(
-				base.position,
+				struct.position,
 				enemy.position,
-				Math.max(distance - 199, base.collision_radius + 1),
+				Math.max(distance - 199, struct.collision_radius + 1),
 			);
 
 			let battleEval = 0;

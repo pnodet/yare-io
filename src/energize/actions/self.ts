@@ -1,24 +1,15 @@
 import data from '@/data';
-import {constructGraph, getPathByClosestAvailableDestination} from '@/graph';
 import {
 	getAvailableSpirits,
 	getMaxFarmers,
 	getSpiritsInRange,
 	getSustainableFarmers,
 	myOutpostEnergy,
-	sortByNearestEnemyDistance,
 	sustainableStarEnergy,
 	transferamount,
 } from '@/utils/functions';
-import {
-	canTransfer,
-	hasRoom,
-	notFull,
-	notNearStar,
-	requestedHeals,
-	_stage,
-} from '@/utils/state';
-import {all, isWithinDist} from '@/utils/vectors';
+import {canTransfer, notFull, _stage} from '@/utils/state';
+import {isWithinDist} from '@/utils/vectors';
 
 const {_spirits, _stars} = data;
 const {friends, enemies} = _spirits;
@@ -97,7 +88,8 @@ const energize_self = (
 		} else if (shouldOdd(ship)) {
 			targets[ship.index] = ship;
 			nselfers += 1;
-			/* 				If (
+			/* FIXME:
+				if (
 					(star.energy > 2 || stayfull) && // Only make the odd busy if on square rush specific scenario
 					memory.enemyIsSquareRush &&
 					haveEssentially9ships

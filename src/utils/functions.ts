@@ -206,3 +206,26 @@ export const myOutpostEnergy = (): number => {
 	const {_info} = data;
 	return _info.outpostcontrolIsMe ? outpost.energy : 0;
 };
+
+export const getShipCost = (base: Base): number => {
+	let cost = base.current_spirit_cost;
+	switch (base.shape) {
+		case 'squares': {
+			cost -= 100;
+			break;
+		}
+
+		case 'circles': {
+			cost -= 10;
+			break;
+		}
+
+		case 'triangles': {
+			cost -= 30;
+			break;
+		}
+		// No default
+	}
+
+	return cost;
+};

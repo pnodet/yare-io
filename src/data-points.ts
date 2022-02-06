@@ -113,9 +113,21 @@ const star2middlefarm = (): {
 	return {home, mid};
 };
 
+const enemybasepoints = () => {
+	const a = offset(enemy_base.position, base.position, 199.999);
+	const b = offset(enemy_base.position, base.position, 399.999);
+
+	return {
+		inrange: a,
+		insight: b,
+	};
+};
+
 const getPoints = () => ({
 	homefarm: getHomeFarm(),
 	star2middlefarm: star2middlefarm(),
+	middle: insideMiddlestarInsideOutpost(),
+	enemybase: enemybasepoints(),
 });
 
 const _points = getPoints();
