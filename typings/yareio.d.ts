@@ -62,6 +62,7 @@ interface Destructible extends Entity {
 
 interface _Spirit extends Destructible {
 	id: SpiritID;
+	index: number;
 
 	hp: 0 | 1;
 	merged: SpiritID[];

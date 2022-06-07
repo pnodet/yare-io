@@ -2,7 +2,11 @@
 	"compilerOptions": {
 		"outDir": "./dist/",
 		"module": "ESNext",
-		"allowJs": true
+		"allowJs": true,
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": ["*"]
+		}
 	},
 	"extends": "@tsconfig/node12/tsconfig.json",
 	"typeRoots": ["./typings", "./node_modules/@types"]
